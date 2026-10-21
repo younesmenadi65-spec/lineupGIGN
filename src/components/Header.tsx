@@ -1,8 +1,13 @@
 import Link from 'next/link';
 
 const NAV = [
-  { href: '/', label: 'Accueil' }, { href: '/lineups', label: 'Lineups' }, { href: '/map', label: 'Carte' },
-  { href: '/favoris', label: 'Favoris' }, { href: '/about', label: 'À propos' },
+  { href: '/', label: 'Accueil' }, 
+  { href: '/lineups', label: 'Lineups' }, 
+  { href: '/map', label: 'Carte' },
+  { href: '/favoris', label: 'Favoris' }, 
+  { href: '/about', label: 'À propos' },
+  // ➕ Ajout du lien vers la page de création
+  { href: '/lineups/new', label: '+ Créer' },
 ];
 
 export function Header() {
@@ -15,7 +20,16 @@ export function Header() {
         <nav aria-label="Navigation principale">
           <ul className="flex flex-wrap items-center gap-1 text-sm font-medium text-muted">
             {NAV.map((n) => (
-              <li key={n.href}><Link href={n.href} className="rounded px-2.5 py-1.5 transition-colors hover:bg-raised hover:text-text">{n.label}</Link></li>
+              <li key={n.href}>
+                <Link 
+                  href={n.href} 
+                  className={`rounded px-2.5 py-1.5 transition-colors hover:bg-raised hover:text-text ${
+                    n.href === '/lineups/new' ? 'text-accent font-semibold bg-raised/50 border border-accent/30' : ''
+                  }`}
+                >
+                  {n.label}
+                </Link>
+              </li>
             ))}
           </ul>
         </nav>
