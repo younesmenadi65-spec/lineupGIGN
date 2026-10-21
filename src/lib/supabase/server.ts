@@ -1,16 +1,28 @@
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 
-export const isConfigured = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+export function createClient() {
+  const cookieStore = cookies()
 
-export async function createClient() {
-  const store = await cookies();
-  return createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
-    cookies: {
-      getAll: () => store.getAll(),
-      setAll(list) {
-        try { list.forEach(({ name, value, options }) => store.set(name, value, options)); } catch { /* appel depuis un Server Component */ }
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        // 👇 C'est ici qu'il faut ajouter le typage : "(list: Array<{ name: string; value: string; options: any }>)"
+        setAll(list: Array<{ name: string; value: string; options: any }>) {
+          try {
+            list.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            )
+          } catch {
+            // L'appel provient d'un Server Component (ce qui est normal)
+          }
+        },
       },
-    },
-  });
+    }
+  )
 }
