@@ -6,6 +6,9 @@ import { CategoryIcon, CATEGORY_TEXT } from '@/components/CategoryIcon';
 import { LineupCard } from '@/components/LineupCard';
 import { CATEGORIES, CATEGORY_LABEL, type Category } from '@/lib/types';
 
+// Force l'exécution dynamique pour éviter les erreurs de build liées aux cookies
+export const dynamic = 'force-dynamic';
+
 const DESC: Record<Category, string> = {
   smoke: 'Bloquer la vision, sécuriser une zone ou couvrir une progression.',
   flash: 'Aveugler les adversaires avant une entrée.',
@@ -14,6 +17,7 @@ const DESC: Record<Category, string> = {
 
 export default async function Home() {
   const [stats, popular, latest] = await Promise.all([getStats(), getPopular(), getLatest()]);
+  
   return (
     <>
       <section className="relative isolate overflow-hidden border-b border-line">
@@ -28,7 +32,8 @@ export default async function Home() {
         </div>
       </section>
 
-      {!isConfigured && (
+      {/* Appel corrigé de la fonction isConfigured() */}
+      {!isConfigured() && (
         <p role="status" className="mx-auto mt-8 max-w-6xl rounded border border-accent px-4 py-3 text-sm">
           Supabase n’est pas configuré : ajoutez les variables du fichier <code>.env.example</code> pour afficher les lineups.
         </p>
